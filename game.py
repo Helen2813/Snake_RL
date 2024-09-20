@@ -5,14 +5,7 @@ from collections import namedtuple
 import numpy as np
 
 pygame.init()
-font = pygame.font.Font('arial.ttf', 25)
-#font = pygame.font.SysFont('arial', 25)
-
-# reset
-# reward
-# play(action) -> direction
-# game_iteration
-# is_collision
+font = pygame.font.SysFont('arial', 25)  # Используем встроенную функцию
 
 class Direction(Enum):
     RIGHT = 1
@@ -24,13 +17,13 @@ Point = namedtuple('Point', 'x, y')
 
 # rgb colors
 WHITE = (255, 255, 255)
-RED = (200,0,0)
+RED = (200, 0, 0)
 BLUE1 = (0, 0, 255)
 BLUE2 = (0, 100, 255)
-BLACK = (0,0,0)
+BLACK = (0, 0, 0)
 
 BLOCK_SIZE = 20
-SPEED = 20
+SPEED = 40
 
 class SnakeGameAI:
     
@@ -59,8 +52,8 @@ class SnakeGameAI:
 
         
     def _place_food(self):
-        x = random.randint(0, (self.w-BLOCK_SIZE )//BLOCK_SIZE )*BLOCK_SIZE 
-        y = random.randint(0, (self.h-BLOCK_SIZE )//BLOCK_SIZE )*BLOCK_SIZE
+        x = random.randint(0, (self.w-BLOCK_SIZE)//BLOCK_SIZE)*BLOCK_SIZE 
+        y = random.randint(0, (self.h-BLOCK_SIZE)//BLOCK_SIZE)*BLOCK_SIZE
         self.food = Point(x, y)
         if self.food in self.snake:
             self._place_food()
@@ -74,7 +67,7 @@ class SnakeGameAI:
                 quit()
         
         # 2. move
-        self._move(action) # update the head
+        self._move(action)  # update the head
         self.snake.insert(0, self.head)
         
         # 3. check if game over
@@ -128,16 +121,17 @@ class SnakeGameAI:
         # [straight, right, left]
 
         clock_wise = [Direction.RIGHT, Direction.DOWN, Direction.LEFT, Direction.UP]
-        idx = clock_wise(self.direction)
-
+        idx = clock_wise.index(self.direction)  # Используем index вместо непосредственного индекса
+        
         if np.array_equal(action, [1, 0, 0]):
             new_dir = clock_wise[idx]
         elif np.array_equal(action, [0, 1, 0]):
-            inext_idx = (idx + 1) % 4
-            new_dir = clock_wise[inext_idx]
-        else: 
-            inext_idx = (idx - 1) % 4
-            new_dir = clock_wise[inext_idx]
+            next_idx = (idx + 1) % 4  # Исправляем опечатку
+            new_dir = clock_wise[next_idx]
+        else:
+            next_idx = (idx - 1) % 4  # Исправляем опечатку
+            new_dir = clock_wise[next_idx]
+        
         self.direction = new_dir
         
         x = self.head.x
